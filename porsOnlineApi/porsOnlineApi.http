@@ -1,0 +1,6 @@
+@porsOnlineApi_HostAddress = http://localhost:5230
+
+GET {{porsOnlineApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "porsOnlineApi": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:29317;http://localhost:29318"
+    }
+  }
+}
