@@ -62,7 +62,7 @@ public class SurveyApiService
 
                         SurveyId = survey.Id,
                         SurveyName = survey.Name,
-                        SurveyLanguage = survey.Language==0?"fa":"en",
+                        SurveyLanguage = survey.Language == 0 ? "fa" : "en",
                         SurveyCreatedDate = survey.CreatedDate,
                         SurveyActive = survey.Active,
                         SurveyIsStopped = survey.IsStopped,
@@ -103,7 +103,7 @@ public class SurveyApiService
     public async Task<SurveyResponseData> GetSurveyResponsesAsync(string apiUrl)
     {
         try
-        {     
+        {
             var response = await _httpClient.GetAsync(apiUrl);
             response.EnsureSuccessStatusCode();
 
@@ -250,10 +250,69 @@ public class SurveyApiService
             answer.SubAnswers = new Dictionary<string, string>();
         }
     }
-  
+    public SurveyStatistics GetStatistics(List<RespondentDetail> respondents)
+    {
+        if (respondents == null || !respondents.Any())
+        {
+            return new SurveyStatistics(); // آمار خالی برگردان
+        }
 
+        // فیلتر کردن داده‌ها برای محاسبات
+        var wiserRatings = respondents.Where(r => r.WiserRating.HasValue).Select(r => r.WiserRating.Value);
+        var npsScores = respondents.Where(r => r.RecommendationScore.HasValue).Select(r => r.RecommendationScore.Value);
+        var completionTimes = respondents.Where(r => r.CompletionTime.HasValue).Select(r => r.CompletionTime.Value);
+
+        return new SurveyStatistics
+        {
+            TotalRespondents = respondents.Count,
+            CompletedResponses = respondents.Count(r => r.IsComplete),
+            AverageWiserRating = wiserRatings.Any() ? wiserRatings.Average() : 0,
+            AverageNPSScore = npsScores.Any() ? npsScores.Average() : 0,
+            PromotersCount = respondents.Count(r => r.NPSCategory == "طرفدار"),
+            DetractorsCount = respondents.Count(r => r.NPSCategory == "منتقد"),
+            PassiveCount = respondents.Count(r => r.NPSCategory == "بی‌تفاوت"),
+            AverageCompletionTime = completionTimes.Any() ?
+                TimeSpan.FromTicks((long)completionTimes.Average(t => t.Ticks)) :
+                TimeSpan.Zero
+        };
+    }
     public void Dispose()
     {
         _httpClient?.Dispose();
+    }
+}
+public class SurveyStatistics
+{
+    public int TotalRespondents { get; set; }
+    public int CompletedResponses { get; set; }
+    public double AverageWiserRating { get; set; }
+    public double AverageNPSScore { get; set; }
+    public int PromotersCount { get; set; }
+    public int DetractorsCount { get; set; }
+    public int PassiveCount { get; set; }
+    public TimeSpan AverageCompletionTime { get; set; }
+
+    // محاسبه NPS Score با چک کردن تقسیم بر صفر
+    public double NPSScore => TotalRespondents > 0 ?
+        ((double)(PromotersCount - DetractorsCount) / TotalRespondents) * 100 : 0;
+
+    // Properties کمکی
+    public double CompletionRate => TotalRespondents > 0 ?
+        ((double)CompletedResponses / TotalRespondents) * 100 : 0;
+
+    public string CompletionRateText => $"{CompletionRate:F1}%";
+    public string NPSScoreText => $"{NPSScore:F1}";
+
+    // متد نمایش خلاصه
+    public string GetSummary()
+    {
+                        return $@"آمار کلی پرسشنامه:
+                • Total Respons‌e: {TotalRespondents:N0}
+                • Total Compelete Response: {CompletedResponses:N0} ({CompletionRateText})
+                • Avg. Wizer Score: {AverageWiserRating:F1}/10
+                • Avg. Recommendation Score: {AverageNPSScore:F1}/10
+                • Scoring NPS: {NPSScoreText}
+                • Fans: {PromotersCount:N0} | بی‌تفاوت: {PassiveCount:N0} | منتقدان: {DetractorsCount:N0}
+                • Avg. Completation Time: {AverageCompletionTime} دقیقه";
     }
 }
