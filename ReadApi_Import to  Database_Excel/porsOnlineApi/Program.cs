@@ -55,7 +55,7 @@ if (app.Environment.IsDevelopment())
         c.RoutePrefix = string.Empty; // Swagger at app root
     });
 }
-app.UseMiddleware<DatabaseCleanupMiddleware>();
+//app.UseMiddleware<DatabaseCleanupMiddleware>();
 
 app.MapControllers();
 
