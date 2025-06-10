@@ -306,7 +306,7 @@ public class SurveyApiService
 
     }
 
-    public static void GenerateJson(ResponseHeader header,string jsonFilename)
+    public static async Task GenerateJson(ResponseHeader header,string jsonFilename)
     {
         var jsonOutput = JsonSerializer.Serialize(header.Choices, new JsonSerializerOptions
         {
@@ -314,7 +314,7 @@ public class SurveyApiService
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
         });
-        File.WriteAllTextAsync(jsonFilename, jsonOutput);
+      await  File.WriteAllTextAsync(jsonFilename, jsonOutput);
     }
     public static async Task GenerateJson(List<RespondentDetail> respondents, string jsonFilename)
     {
