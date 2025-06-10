@@ -18,15 +18,8 @@ public class Program
         Console.WriteLine($"Responser Count: {responseData.RespondersCount}");
 
         var respondents = surveyService.ConvertToRespondentDetails(responseData);
-       
-        var jsonOutput = JsonSerializer.Serialize(respondents, new JsonSerializerOptions
-        {
-            WriteIndented = true,
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-        });
-        await File.WriteAllTextAsync("flat_output.json", jsonOutput);
-     
+        await SurveyApiService.GenerateJson(respondents, "output.json");
+      
         surveyService.Dispose();
     }
 }

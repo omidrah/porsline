@@ -28,7 +28,7 @@ namespace porslineApi.JsonModel
         public List<QuestionAnswer> Answers { get; set; }
 
         // خلاصه امتیازات
-        public int? WiserRating { get; set; }
+        public int? WizerScore { get; set; }
         public int? RecommendationScore { get; set; } 
 
         

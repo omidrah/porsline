@@ -196,7 +196,7 @@ public class SurveyApiService
                     respondent.GenderId = header.Choices.First(x => x.Name == answerValue.Data[bodyindex].ToString()).Id;
                     respondent.Gender = answerValue.Data[bodyindex].ToString();
                     bodyindex++;
-
+                    GenerateJson(header, "gender.json"); //get id of gender
                 }
                 else if (title.Contains("قبل از مراجعه به فروشگاه "))
                 {
@@ -204,20 +204,20 @@ public class SurveyApiService
                     //id = 51972036 نه نمی شناختم 
                     respondent.PreviousAcquaintance = header.Choices.First(x => x.Name == answerValue.Data[bodyindex].ToString()).Id;
                     bodyindex++;
-
+                    GenerateJson(header, "PreviousAcquaintance.json"); //Id of Acquaintance
                 }
                 else if (title.Contains("از چه طریقی با "))
                 {
                     respondent.AcquaintanceMethod = header.Choices.First(x => x.Name == answerValue.Data[bodyindex].ToString()).Id;
-                    bodyindex++;
-
+                    bodyindex++;                    
+                    GenerateJson(header, "AcquaintanceMethod.json"); //Id of methods
                 }
 
                 else if (title.Contains("نصاب") && !string.IsNullOrEmpty(answerValue.Data[bodyindex].ToString()))
                 {
                     respondent.InstallerScore = header.Choices.First(x => x.Name == answerValue.Data[bodyindex].ToString()).Id;
                     bodyindex++;
-
+                    GenerateJson(header, "InstallerBe.json"); //Id of behaviour of intstaller                    
                 }
 
                 else if (header.AllowMultipleSelect == true)
@@ -244,7 +244,7 @@ public class SurveyApiService
                 if (title.Contains("امتیازی می‌دین") && title.Contains("وایزر"))
                 {
                     if (int.TryParse(answerValue.Data[bodyindex].ToString(), out int rating))
-                        respondent.WiserRating = rating;
+                        respondent.WizerScore = rating;
                 }
                 else if (title.Contains("توصیه کنین"))
                 {
@@ -298,14 +298,35 @@ public class SurveyApiService
                     respondent.ProvinceId = header.Choices.First(x => x.Name == answerValue.Data[bodyindex].ToString()).Id;
                     respondent.Province = answerValue.Data[bodyindex].ToString();
                     bodyindex++;
-
-
+                    GenerateJson(header,"province.json"); //Id of province
                 }
                 break;
         }
 
 
     }
+
+    public static void GenerateJson(ResponseHeader header,string jsonFilename)
+    {
+        var jsonOutput = JsonSerializer.Serialize(header.Choices, new JsonSerializerOptions
+        {
+            WriteIndented = true,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+        });
+        File.WriteAllTextAsync(jsonFilename, jsonOutput);
+    }
+    public static async Task GenerateJson(List<RespondentDetail> respondents, string jsonFilename)
+    {
+        var jsonOutput = JsonSerializer.Serialize(respondents, new JsonSerializerOptions
+        {
+            WriteIndented = true,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+        });
+        await File.WriteAllTextAsync(jsonFilename, jsonOutput);
+    }
+
     public void Dispose()
     {
         _httpClient?.Dispose();
