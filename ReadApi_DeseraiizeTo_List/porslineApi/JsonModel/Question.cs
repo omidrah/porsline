@@ -70,7 +70,6 @@ namespace porsOnlineApi.JsonModel
 
         public List<Choice> Choices { get; set; }
 
-        // برای منطق شرطی
         [JsonPropertyName("second_operand")]
         public SecondOperand SecondOperand { get; set; }
 

@@ -45,10 +45,8 @@ namespace porsOnlineApi.JsonModel
 
         public Subdomain Subdomain { get; set; }
 
-        // اضافه کردن لیست سوالات
         public List<Question> Questions { get; set; }
 
-        // سایر فیلدهای اضافی که ممکن است در API باشند
         public Settings Settings { get; set; }
 
         public List<Variable> Variables { get; set; }

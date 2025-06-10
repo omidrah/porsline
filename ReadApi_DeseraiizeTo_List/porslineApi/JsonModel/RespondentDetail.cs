@@ -7,46 +7,30 @@ using System.Threading.Tasks;
 namespace porslineApi.JsonModel
 {
     public class RespondentDetail
-    {
-        // اطلاعات پایه پاسخ‌دهنده
-        public long ResponderId { get; set; }
-        public string ResponderCode { get; set; }
-
-        // اطلاعات شخصی (استخراج شده از پاسخ‌ها)
+    {       
         public string PhoneNumber { get; set; }
         public string FullName { get; set; }
         public string Gender { get; set; }
+        public int GenderId { get; set; }
         public string Province { get; set; }
+        public int ProvinceId { get; set; }
+        public int PreviousAcquaintance{ get; set; }
+        public int AcquaintanceMethod { get; set; }
 
-        // زمان‌های مهم
-        public DateTime? StartedDateTime { get; set; }
-        public DateTime? SubmittedDateTime { get; set; }
-
-        // لینک بررسی
-        public string ReviewToken { get; set; }
-
+        public int[] BestFeatures { get; set; }
+        public int SellerScore { get; set; }
+        public int InstallerScore { get; set; }
+        public string? Region { get; set; }
+        public string? StoreName { get; set; }
+        public string? SellerName { get; set; }
+        public string? InstallerNam { get; set; }
         // پاسخ‌های کامل
         public List<QuestionAnswer> Answers { get; set; }
 
         // خلاصه امتیازات
         public int? WiserRating { get; set; }
-        public int? RecommendationScore { get; set; }
-        public int? SalesPersonRating { get; set; }
+        public int? RecommendationScore { get; set; } 
 
-        // Properties کمکی
-        public bool IsComplete => SubmittedDateTime.HasValue;
-        public TimeSpan? CompletionTime => (SubmittedDateTime - StartedDateTime);
-        public string NPSCategory => GetNPSCategory(RecommendationScore);
-
-        private string GetNPSCategory(int? score)
-        {
-            if (!score.HasValue) return "نامشخص";
-            return score.Value switch
-            {
-                >= 9 => "طرفدار",
-                >= 7 => "بی‌تفاوت",
-                _ => "منتقد"
-            };
-        }
+        
     }
 }

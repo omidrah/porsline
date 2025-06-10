@@ -12,11 +12,7 @@ namespace porslineApi.JsonModel
         public string QuestionTitle { get; set; }
         public string QuestionType { get; set; }
         public object Answer { get; set; }
-        public string AnswerText { get; set; }
         public bool IsAnswered { get; set; }
-
-        // برای سوالات چندگزینه‌ای
-        public List<string> SelectedChoices { get; set; }
 
         // برای سوالات ماتریسی
         public Dictionary<string, string> SubAnswers { get; set; }
